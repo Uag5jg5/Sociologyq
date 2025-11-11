@@ -104,11 +104,11 @@ nav ul{display:none; flex-direction:column; background:#fff; position:absolute; 
 <h3>Админ-панель</h3>
 <div id="authBox">
 <label>Пароль администратора</label>
-<input type="text" id="adminPassInput">
+<input type="password" id="adminPassInput">
 <button class="btn" onclick="loginAdmin()">Войти</button>
 <button class="btn secondary" onclick="closeAdmin()">Отмена</button>
 </div>
-<div id="adminPanel" style="display:none; margin-top:12px;">
+<div id="adminPanel" style="display:none; margin-top:12px; max-height:70vh; overflow:auto;">
 <label>Действие</label>
 <select id="adminAction">
 <option value="addLecture">Добавить лекцию</option>
@@ -123,34 +123,28 @@ nav ul{display:none; flex-direction:column; background:#fff; position:absolute; 
 <div id="adminList" style="margin-top:12px; max-height:200px; overflow:auto;"></div>
 </div>
 </div>
-</div>
 <script>
-let adminOpen=false;
-function toggleMobile(){const nav=document.querySelector('nav ul');if(nav.style.display==='flex'){nav.style.display='none';}else{nav.style.display='flex';nav.style.flexDirection='column';}}
-const STORAGE_KEY='kult_site_live';
-const ADMIN_PASSWORD='Ua33333';
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+let STORAGE_KEY='kult_site_live';
+let ADMIN_PASSWORD='Ua33333';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
 if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',architecture:'',painting:'',religion:'',life:''}};
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); renderContent();}
+function toggleMobile(){const nav=document.querySelector('nav ul');nav.style.display=(nav.style.display==='flex')?'none':'flex';nav.style.flexDirection='column';}
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 function renderContent(){const area=document.getElementById('contentArea'); area.innerHTML='';
-const lecturesHTML='<section id="lectures" class="section-content"><h2>📖 Лекции</h2><div class="section-body">'+state.lectures.map((l,i)=>`<div class="card"><strong>${l.title}</strong><p>${l.text}</p></div>`).join('')+'</div></section>';
-area.innerHTML+=lecturesHTML;
-const presHTML='<section id="presentations" class="section-content"><h2>📊 Презентации</h2><div class="section-body">'+state.presentations.map((p,i)=>`<div class="card"><strong>${p.title}</strong><p>${p.note||''}</p></div>`).join('')+'</div></section>';
-area.innerHTML+=presHTML;
-['sculpture','architecture','painting','religion','life'].forEach(sec=>{
-let secHTML=`<section id="${sec}" class="section-content"><h2>${getEmoji(sec)} ${sec.charAt(0).toUpperCase()+sec.slice(1)}</h2><div class="section-body">`+state.sections[sec].split('|').map((item,i)=>item?`<div class="card">${item}</div>`:'').join('')+`</div></section>`;
-area.innerHTML+=secHTML;
+['lectures','presentations','sculpture','architecture','painting','religion','life'].forEach(sec=>{
+let title={'lectures':'📖 Лекции','presentations':'📊 Презентации','sculpture':'🗿 Скульптура','architecture':'🏛 Архитектура','painting':'🎨 Живопись','religion':'⛪ Религия','life':'🏠 Быт'}[sec];
+let body=(sec==='lectures'||sec==='presentations')?state[sec].map(e=>`<div class="card"><strong>${e.title}</strong>${e.text?'<p>'+e.text+'</p>':''}</div>`).join(''):state.sections[sec].split('|').map(e=>e?`<div class="card">${e}</div>`:'').join('');
+area.innerHTML+=`<section id='${sec}' class='section-content'><h2>${title}</h2><div class='section-body'>${body}</div></section>`;
 });
-animateCards();}
-function getEmoji(sec){switch(sec){case 'sculpture':return '🗿';case 'architecture':return '🏛';case 'painting':return '🎨';case 'religion':return '⛪';case 'life':return '🏠';default:return ''}}
+document.querySelectorAll('.card').forEach((el,i)=>setTimeout(()=>{el.classList.add('show');},i*100));}
 renderContent();
-function animateCards(){document.querySelectorAll('.card').forEach((el,i)=>{setTimeout(()=>{el.classList.add('show');},i*100);});}
 function openAdmin(){document.getElementById('adminModal').style.display='flex'; checkAdmin();}
 function closeAdmin(){document.getElementById('adminModal').style.display='none';}
 function checkAdmin(){const ok=localStorage.getItem('admin_logged')==='1';
-if(ok){document.getElementById('authBox').style.display='none'; document.getElementById('adminPanel').style.display='block'; buildForm();}else{document.getElementById('authBox').style.display='block'; document.getElementById('adminPanel').style.display='none';}}
-function loginAdmin(){const val=document.getElementById('adminPassInput').value; if(val===ADMIN_PASSWORD){localStorage.setItem('admin_logged','1');checkAdmin();} else alert('Неверный пароль');}
+if(ok){document.getElementById('authBox').style.display='none'; document.getElementById('adminPanel').style.display='block'; buildForm();}
+else {document.getElementById('authBox').style.display='block'; document.getElementById('adminPanel').style.display='none';}}
+function loginAdmin(){let val=document.getElementById('adminPassInput').value;if(val===ADMIN_PASSWORD){localStorage.setItem('admin_logged','1');checkAdmin();}else alert('Неверный пароль');}
 function logoutAdmin(){localStorage.removeItem('admin_logged'); checkAdmin();}
 function buildForm(){
 const action=document.getElementById('adminAction').value;
@@ -159,31 +153,17 @@ if(action==='addLecture'){area.innerHTML=`<label>Название</label><input 
 if(action==='addPresentation'){area.innerHTML=`<label>Название</label><input id='f_title'><label>Описание</label><input id='f_note'>`;}
 if(action==='addSectionText'){area.innerHTML=`<label>Раздел</label><select id='f_section'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><label>Текст</label><textarea id='f_section_text'></textarea>`;}
 if(action==='addImageText'){area.innerHTML=`<label>Раздел</label><select id='f_img_section'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><label>Текст</label><textarea id='f_img_text'></textarea><label>Выбрать изображение</label><input type='file' id='f_img_file' accept='image/*'>`;}
-if(action==='deleteItem'){area.innerHTML=`<label>Выберите секцию</label><select id='f_del_section'><option value='lectures'>Лекции</option><option value='presentations'>Презентации</option><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><button class='btn' onclick='deleteSelected()'>Удалить выбранный элемент</button><div id='delList'></div>`; populateDelList(); }
+if(action==='deleteItem'){area.innerHTML=`<label>Выберите секцию</label><select id='f_del_section'><option value='lectures'>Лекции</option><option value='presentations'>Презентации</option><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><div id='delList'></div><button class='btn' onclick='deleteSelected()'>Удалить выбранный элемент</button>`; populateDelList();}
 }
-document.getElementById('adminAction').addEventListener('change',buildForm);
 function submitAdminForm(){
 const action=document.getElementById('adminAction').value;
 if(action==='addLecture'){const t=document.getElementById('f_title').value; const txt=document.getElementById('f_text').value; if(!t||!txt){alert('Заполните все поля'); return;} state.lectures.unshift({title:t,text:txt}); save();}
-if(action==='addPresentation'){const t=document.getElementById('f_title').value; const note=document.getElementById('f_note').value; if(!t){alert('Заполните название'); return;} state.presentations.unshift({title:t,note:note}); save();}
+if(action==='addPresentation'){const t=document.getElementById('f_title').value; const note=document.getElementById('f_note').value; state.presentations.unshift({title:t,note:note}); save();}
 if(action==='addSectionText'){const sec=document.getElementById('f_section').value; const txt=document.getElementById('f_section_text').value; state.sections[sec]+=(state.sections[sec]? '|':'')+`<p>${txt}</p>`; save();}
-if(action==='addImageText'){
-const sec=document.getElementById('f_img_section').value;
-const txt=document.getElementById('f_img_text').value;
-const file=document.getElementById('f_img_file').files[0];
+if(action==='addImageText'){const sec=document.getElementById('f_img_section').value; const txt=document.getElementById('f_img_text').value; const file=document.getElementById('f_img_file').files[0];
 if(!txt||!file){alert('Заполните текст и выберите изображение'); return;}
-const reader=new FileReader();
-reader.onload=function(e){
-state.sections[sec]+=(state.sections[sec]? '|':'')+`<p>${txt}</p><img src='${e.target.result}'></div>`; save();
-};
-reader.readAsDataURL(file);
+const reader=new FileReader(); reader.onload=function(e){ state.sections[sec]+=(state.sections[sec]? '|':'')+`<p>${txt}</p><img src='${e.target.result}'></div>`; save();}; reader.readAsDataURL(file);}
 }
-}
-function deleteItem(section,index){
-if(localStorage.getItem('admin_logged')==='1'){
-if(confirm('Удалить этот элемент?')){
-state[section].splice(index,1); save();
-}}
-else alert('Удалять материалы может только администратор');
-}
-function deleteItemSection(section,index){
+function populateDelList(){const sec=document.getElementById('f_del_section').value; const delList=document.getElementById('delList'); delList.innerHTML=''; let items=sec==='lectures'||sec==='presentations'?state[sec]:state.sections[sec].split('|'); items.forEach((it,i)=>{if(it) delList.innerHTML+=`<div><input type='radio' name='del_item' value='${i}'> ${sec==='lectures'||sec==='presentations'?it.title:'Текст/Изображение'}</div>`;});}
+document.getElementById('f_del_section')?.addEventListener('change',populateDelList);
+function deleteSelected(){if(localStorage.getItem('admin_logged')==='1'){const sec=document.getElementById('f_del_section').value; const sel=document.querySelector('input[name="del_item"]:checked'); if(!sel){alert('Выберите элемент'); return;} const index=parseInt(sel.value); if(sec==='lectures'||sec==='presentations'){state[sec].splice(index,1);} else {let items=state.sections[sec].split('|'); items.splice(index,1); state.sections[sec]=items.join('|
