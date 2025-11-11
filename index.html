@@ -131,7 +131,7 @@ const STORAGE_KEY='kult_site_live';
 const ADMIN_PASSWORD='Ua33333';
 function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
-if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',architecture:'',painting:'',religion:'',life:''},images:[]};
+if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',architecture:'',painting:'',religion:'',life:''}};
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); renderContent();}
 function renderContent(){
 const area=document.getElementById('contentArea'); area.innerHTML='';
@@ -164,7 +164,7 @@ const area=document.getElementById('formArea'); area.innerHTML='';
 if(action==='addLecture'){area.innerHTML=`<label>Название</label><input id='f_title'><label>Текст</label><textarea id='f_text'></textarea>`;}
 if(action==='addPresentation'){area.innerHTML=`<label>Название</label><input id='f_title'><label>Описание</label><input id='f_note'>`;}
 if(action==='addSectionText'){area.innerHTML=`<label>Раздел</label><select id='f_section'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><label>Текст</label><textarea id='f_section_text'></textarea>`;}
-if(action==='addImageText'){area.innerHTML=`<label>Раздел</label><select id='f_img_section'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><label>Текст</label><textarea id='f_img_text'></textarea><label>Ссылка на изображение</label><input id='f_img_url' placeholder='https://...'>`;}
+if(action==='addImageText'){area.innerHTML=`<label>Раздел</label><select id='f_img_section'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><label>Текст</label><textarea id='f_img_text'></textarea><label>Выбрать изображение</label><input type='file' id='f_img_file' accept='image/*'>`;}
 }
 document.getElementById('adminAction').addEventListener('change',buildForm);
 function submitAdminForm(){
@@ -172,7 +172,17 @@ const action=document.getElementById('adminAction').value;
 if(action==='addLecture'){const t=document.getElementById('f_title').value; const txt=document.getElementById('f_text').value; if(!t||!txt){alert('Заполните все поля'); return;} state.lectures.unshift({title:t,text:txt}); save();}
 if(action==='addPresentation'){const t=document.getElementById('f_title').value; const note=document.getElementById('f_note').value; if(!t){alert('Заполните название'); return;} state.presentations.unshift({title:t,note:note}); save();}
 if(action==='addSectionText'){const sec=document.getElementById('f_section').value; const txt=document.getElementById('f_section_text').value; state.sections[sec]+=`<div class="card"><p>${txt}</p></div>`; save();}
-if(action==='addImageText'){const sec=document.getElementById('f_img_section').value; const txt=document.getElementById('f_img_text').value; const url=document.getElementById('f_img_url').value; if(!txt||!url){alert('Заполните текст и ссылку на изображение'); return;} state.sections[sec]+=`<div class="card"><p>${txt}</p><img src='${url}'></div>`; save();}
+if(action==='addImageText'){
+const sec=document.getElementById('f_img_section').value;
+const txt=document.getElementById('f_img_text').value;
+const file=document.getElementById('f_img_file').files[0];
+if(!txt||!file){alert('Заполните текст и выберите изображение'); return;}
+const reader=new FileReader();
+reader.onload=function(e){
+state.sections[sec]+=`<div class="card"><p>${txt}</p><img src='${e.target.result}'></div>`; save();
+};
+reader.readAsDataURL(file);
+}
 }
 </script>
 </body>
