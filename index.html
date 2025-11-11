@@ -110,13 +110,14 @@ input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px soli
 let STORAGE_KEY='kult_site_live';
 let ADMIN_PASSWORD='Ua33333';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
-if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',architecture:'',painting:'',religion:'',life:''}};
+if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:[],architecture:[],painting:[],religion:[],life:[]}};
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); renderContent();}
 function toggleMobile(){const nav=document.querySelector('nav ul');nav.style.display=(nav.style.display==='flex')?'none':'flex';nav.style.flexDirection='column';}
 function renderContent(){const area=document.getElementById('contentArea'); area.innerHTML='';
 ['lectures','presentations','sculpture','architecture','painting','religion','life'].forEach(sec=>{
 let title={'lectures':'📖 Лекции','presentations':'📊 Презентации','sculpture':'🗿 Скульптура','architecture':'🏛 Архитектура','painting':'🎨 Живопись','religion':'⛪ Религия','life':'🏠 Быт'}[sec];
-let body=(sec==='lectures'||sec==='presentations')?state[sec].map((e,i)=>`<div class="card"><strong>${e.title}</strong>${e.text?'<p>'+e.text+'</p>':''}<button class='deleteBtn' onclick='deleteItem("${sec}",${i})'>Удалить</button></div>`).join(''):state.sections[sec].split('|').map((e,i)=>e?`<div class="card">${e} <button class='deleteBtn' onclick='deleteSection("${sec}",${i})'>Удалить</button></div>`:'').join('');
+let body=(sec==='lectures'||sec==='presentations')?state[sec].map((e,i)=>`<div class="card"><strong>${e.title}</strong>${e.text?'<p>'+e.text+'</p>':''}${e.image?'<img src="'+e.image+'">':''}<button class='deleteBtn' onclick='deleteItem("${sec}",${i})'>Удалить</button></div>`).join(''):
+state.sections[sec].map((e,i)=>`<div class="card">${e}<button class='deleteBtn' onclick='deleteSection("${sec}",${i})'>Удалить</button></div>`).join('');
 area.innerHTML+=`<section id='${sec}' class='section-content'><h2>${title}</h2><div class='section-body'>${body}</div></section>`;
 });
 }
@@ -130,7 +131,8 @@ function loginAdmin(){let val=document.getElementById('adminPassInput').value;if
 function logoutAdmin(){localStorage.removeItem('admin_logged'); checkAdmin();}
 function buildAdminPanel(){
 let panel=document.getElementById('adminPanel');
-panel.innerHTML=`<h4>Добавить Лекцию</h4>
+panel.innerHTML=`
+<h4>Добавить Лекцию</h4>
 <label>Название</label><input id='lectureTitle'>
 <label>Текст</label><textarea id='lectureText'></textarea>
 <input type='file' id='lectureImage'>
@@ -140,6 +142,12 @@ panel.innerHTML=`<h4>Добавить Лекцию</h4>
 <label>Название</label><input id='presentationTitle'>
 <label>Текст</label><textarea id='presentationText'></textarea>
 <button class='btn' onclick='addPresentation()'>Добавить</button>
+<hr>
+<h4>Добавить Раздел</h4>
+<label>Тип раздела</label>
+<select id='sectionType'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select>
+<label>Контент (текст)</label><textarea id='sectionText'></textarea>
+<button class='btn' onclick='addSection()'>Добавить</button>
 <hr>
 <button class='btn secondary' onclick='logoutAdmin()'>Выйти</button>`;
 }
@@ -157,11 +165,13 @@ let title=document.getElementById('presentationTitle').value;
 let text=document.getElementById('presentationText').value;
 state.presentations.push({title:title,text:text});save();
 }
-function deleteItem(type,index){
-if(confirm('Удалить этот материал?')){state[type].splice(index,1);save();}
+function addSection(){
+let type=document.getElementById('sectionType').value;
+let text=document.getElementById('sectionText').value;
+state.sections[type].push(text);save();
 }
-function deleteSection(sec,index){
-let arr=state.sections[sec].split('|');arr.splice(index,1);state.sections[sec]=arr.join('|');save();}
+function deleteItem(type,index){if(confirm('Удалить этот материал?')){state[type].splice(index,1);save();}}
+function deleteSection(sec,index){if(confirm('Удалить этот материал?')){state.sections[sec].splice(index,1);save();}}
 </script>
 </body>
 </html>
