@@ -117,7 +117,7 @@ function renderContent(){const area=document.getElementById('contentArea'); area
 ['lectures','presentations','sculpture','architecture','painting','religion','life'].forEach(sec=>{
 let title={'lectures':'📖 Лекции','presentations':'📊 Презентации','sculpture':'🗿 Скульптура','architecture':'🏛 Архитектура','painting':'🎨 Живопись','religion':'⛪ Религия','life':'🏠 Быт'}[sec];
 let body=(sec==='lectures'||sec==='presentations')?state[sec].map((e,i)=>`<div class="card"><strong>${e.title}</strong>${e.text?'<p>'+e.text+'</p>':''}${e.image?'<img src="'+e.image+'">':''}<button class='deleteBtn' onclick='deleteItem("${sec}",${i})'>Удалить</button></div>`).join(''):
-state.sections[sec].map((e,i)=>`<div class="card">${e}<button class='deleteBtn' onclick='deleteSection("${sec}",${i})'>Удалить</button></div>`).join('');
+state.sections[sec].map((e,i)=>`<div class="card">${e.text?'<p>'+e.text+'</p>':''}${e.image?'<img src="'+e.image+'">':''}<button class='deleteBtn' onclick='deleteSection("${sec}",${i})'>Удалить</button></div>`).join('');
 area.innerHTML+=`<section id='${sec}' class='section-content'><h2>${title}</h2><div class='section-body'>${body}</div></section>`;
 });
 }
@@ -135,18 +135,20 @@ panel.innerHTML=`
 <h4>Добавить Лекцию</h4>
 <label>Название</label><input id='lectureTitle'>
 <label>Текст</label><textarea id='lectureText'></textarea>
-<input type='file' id='lectureImage'>
+<label>Изображение</label><input type='file' id='lectureImage'>
 <button class='btn' onclick='addLecture()'>Добавить</button>
 <hr>
 <h4>Добавить Презентацию</h4>
 <label>Название</label><input id='presentationTitle'>
 <label>Текст</label><textarea id='presentationText'></textarea>
+<label>Изображение</label><input type='file' id='presentationImage'>
 <button class='btn' onclick='addPresentation()'>Добавить</button>
 <hr>
 <h4>Добавить Раздел</h4>
 <label>Тип раздела</label>
 <select id='sectionType'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select>
 <label>Контент (текст)</label><textarea id='sectionText'></textarea>
+<label>Изображение</label><input type='file' id='sectionImage'>
 <button class='btn' onclick='addSection()'>Добавить</button>
 <hr>
 <button class='btn secondary' onclick='logoutAdmin()'>Выйти</button>`;
@@ -156,19 +158,24 @@ let title=document.getElementById('lectureTitle').value;
 let text=document.getElementById('lectureText').value;
 let file=document.getElementById('lectureImage').files[0];
 let reader=new FileReader();
-reader.onload=function(e){
-state.lectures.push({title:title,text:text,image:e.target.result});save();};
+reader.onload=function(e){state.lectures.push({title:title,text:text,image:e.target.result});save();};
 if(file){reader.readAsDataURL(file);}else{state.lectures.push({title:title,text:text});save();}
 }
 function addPresentation(){
 let title=document.getElementById('presentationTitle').value;
 let text=document.getElementById('presentationText').value;
-state.presentations.push({title:title,text:text});save();
+let file=document.getElementById('presentationImage').files[0];
+let reader=new FileReader();
+reader.onload=function(e){state.presentations.push({title:title,text:text,image:e.target.result});save();};
+if(file){reader.readAsDataURL(file);}else{state.presentations.push({title:title,text:text});save();}
 }
 function addSection(){
 let type=document.getElementById('sectionType').value;
 let text=document.getElementById('sectionText').value;
-state.sections[type].push(text);save();
+let file=document.getElementById('sectionImage').files[0];
+let reader=new FileReader();
+reader.onload=function(e){state.sections[type].push({text:text,image:e.target.result});save();};
+if(file){reader.readAsDataURL(file);}else{state.sections[type].push({text:text});save();}
 }
 function deleteItem(type,index){if(confirm('Удалить этот материал?')){state[type].splice(index,1);save();}}
 function deleteSection(sec,index){if(confirm('Удалить этот материал?')){state.sections[sec].splice(index,1);save();}}
