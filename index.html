@@ -1,450 +1,189 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Культурология и общества</title>
-  <meta name="description" content="Цифровой образовательный ресурс по культурологии — лекции, презентации, галерея. Преподаватель: Середа Вера Геннадьевна">
   <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root{
+    :root {
       --bg:#ffffff;
       --text:#111827;
-      --muted:#4b5563;
-      --gold:#b8860b; /* darker golden */
+      --gold:#b8860b;
       --gold-2:#ffd27a;
-      --glass: rgba(0,0,0,0.03);
+      --muted:#4b5563;
       --radius:10px;
       --maxw:1100px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{font-family:'Libre Franklin', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    *{box-sizing:border-box; margin:0; padding:0;}
+    body{font-family:'Libre Franklin', sans-serif; background:var(--bg); color:var(--text);}
+    header{position:fixed; top:0; left:0; right:0; background:rgba(255,255,255,0.98); backdrop-filter:blur(6px); border-bottom:1px solid #f0e6d0; z-index:100;}
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;}
+    .brand{display:flex; align-items:center; gap:12px;}
+    .logo{width:56px; height:56px; border-radius:8px; background:linear-gradient(180deg,var(--gold),var(--gold-2)); display:flex; justify-content:center; align-items:center; color:#fff; font-weight:700; font-family:'Playfair Display'; font-size:18px;}
+    nav ul{display:flex; gap:12px; list-style:none;}
+    nav a{text-decoration:none; color:var(--text); padding:8px 12px; border-radius:8px; font-weight:600; transition:0.3s;}
+    nav a:hover, nav a.active{background:var(--gold-2); color:#111;}
+    .burger{display:none; font-size:24px; background:none; border:none; cursor:pointer;}
 
-    /* Header */
-    header{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(6px);border-bottom:1px solid #f0e6d0;z-index:60}
-    .wrap{max-width:var(--maxw);margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:56px;height:56px;border-radius:8px;background:linear-gradient(180deg,var(--gold),var(--gold-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-family:'Playfair Display';font-size:18px}
-    .brand h1{margin:0;font-size:18px}
-    .brand p{margin:0;font-size:12px;color:var(--muted)}
+    main{max-width:var(--maxw); margin:100px auto 60px; padding:18px;}
+    .banner{display:flex; flex-wrap:wrap; align-items:center; gap:20px; padding:28px; border-radius:var(--radius); background:linear-gradient(180deg,#fff,#fff); border:1px solid #f4ead2;}
+    .banner h2{font-family:'Playfair Display', serif; font-size:28px; margin-bottom:12px;}
+    .banner p{color:var(--muted); line-height:1.5;}
+    .banner .meta{margin-top:8px; font-size:14px; font-weight:600; color:var(--text);}
+    .banner .img{flex:1 1 300px; border-radius:8px; overflow:hidden;}
+    .banner .img img{width:100%; height:100%; object-fit:cover; display:block;}
 
-    nav ul{display:flex;gap:8px;list-style:none;padding:0;margin:0;align-items:center}
-    nav a{color:var(--text);text-decoration:none;padding:8px 12px;border-radius:8px;font-weight:600;font-size:14px}
-    nav a.active{color:#fff;background:linear-gradient(90deg,var(--gold),var(--gold-2))}
-    nav a:hover{background:#fff7e6}
+    .section-content{margin-top:28px;}
+    .section-content h2{margin-bottom:12px; font-size:22px;}
+    .section-body{border:1px solid #f2e9d6; padding:16px; border-radius:var(--radius); background:#fff;}
+    .section-body p{line-height:1.6; color:var(--muted); margin-bottom:12px;}
 
-    .cta{background:linear-gradient(90deg,var(--gold),var(--gold-2));color:#111;padding:8px 12px;border-radius:8px;font-weight:700}
+    .btn{padding:8px 12px; border-radius:8px; background:var(--gold); color:#111; border:none; cursor:pointer; font-weight:600; transition:0.3s;}
+    .btn:hover{background:var(--gold-2);}
+    .btn.secondary{background:transparent; border:1px solid #f3dec1;}
 
-    .burger{display:none;background:transparent;border:0;font-size:20px}
-    @media(max-width:880px){nav ul{display:none}.burger{display:block}}
+    footer{border-top:1px solid #f0e6d0; padding:20px 18px; margin-top:40px; background:#fff;}
+    .footer-inner{max-width:var(--maxw); margin:0 auto; display:flex; flex-direction:column; gap:6px; color:var(--muted); font-size:14px;}
 
-    main{max-width:var(--maxw);margin:110px auto 60px;padding:18px}
+    /* Admin */
+    .modal{position:fixed; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; z-index:200;}
+    .panel{width:90%; max-width:800px; background:#fff; border-radius:8px; padding:18px; border:1px solid #efe3c8;}
+    label{display:block; margin-top:10px; font-size:13px; color:var(--muted);}
+    input, textarea, select{width:100%; padding:10px; border-radius:8px; border:1px solid #efe3c8; margin-top:6px;}
 
-    /* Banner */
-    .banner{display:flex;gap:20px;align-items:center;padding:28px;border-radius:var(--radius);background:linear-gradient(180deg,#fff,#fff);border:1px solid #f4ead2}
-    .banner .left{flex:1}
-    .banner h2{font-family:'Playfair Display',serif;margin:0;font-size:32px;color:var(--text)}
-    .banner p{color:var(--muted);margin-top:10px;line-height:1.5}
-    .banner .meta{margin-top:12px;font-size:14px;color:var(--text);font-weight:600}
-    .banner .img{width:360px;flex:0 0 360px;border-radius:8px;overflow:hidden;border:1px solid #f0e6d0}
-    .banner .img img{width:100%;height:100%;object-fit:cover;display:block}
-
-    /* Sections */
-    .sections{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
-    .card{background:#fff;border:1px solid #f2e9d6;border-radius:10px;padding:16px}
-    .card h3{margin:0 0 8px 0}
-    .card p{color:var(--muted);margin:0}
-
-    .grid-list{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-
-    /* Single section layout */
-    section.content{margin-top:28px}
-    section.content h2{margin-bottom:8px;font-size:22px}
-    .section-body{background:#fff;border:1px solid #f2e9d6;padding:18px;border-radius:10px}
-    .section-body p{color:var(--muted);line-height:1.6}
-
-    /* Controls */
-    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .btn{background:var(--gold);color:#111;padding:8px 12px;border-radius:8px;border:0;font-weight:600;cursor:pointer}
-    .btn.secondary{background:transparent;border:1px solid #f3dec1}
-
-    /* Footer */
-    footer{border-top:1px solid #f0e6d0;padding:20px 18px;margin-top:40px;background:#fff}
-    .footer-inner{max-width:var(--maxw);margin:0 auto;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:14px}
-
-    /* Admin modal */
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:80}
-    .modal .panel{width:940px;max-width:94%;background:#fff;border-radius:8px;padding:18px;border:1px solid #efe3c8}
-    label{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
-    input[type=text], textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid #efe3c8;background:#fff;color:var(--text)}
-    textarea{min-height:120px}
-    .admin-row{display:flex;gap:10px;align-items:center}
-
-    /* Responsive adjustments */
-    @media(max-width:1100px){.sections{grid-template-columns:repeat(2,1fr)}.grid-list{grid-template-columns:repeat(2,1fr)}.banner .img{width:260px}}
-    @media(max-width:700px){.sections{grid-template-columns:1fr}.grid-list{grid-template-columns:1fr}.banner{flex-direction:column}.banner .img{width:100%;height:200px}}
-
-    /* small helpers */
-    .muted{color:var(--muted)}
-    .note{font-size:13px;color:var(--muted);margin-top:8px}
-    .section-actions{display:flex;gap:8px;margin-top:12px}
-    .hidden{display:none}
+    @media(max-width:880px){
+      nav ul{display:none; flex-direction:column; background:#fff; position:absolute; top:70px; right:18px; padding:12px; border:1px solid #efe3c8; border-radius:8px;}
+      .burger{display:block;}
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <div class="brand">
-        <div class="logo">КиО</div>
-        <div>
-          <h1>Культурология и общества</h1>
-          <p>Цифровой образовательный ресурс</p>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="burger" aria-label="menu" onclick="toggleMobile()">☰</button>
-        <nav>
-          <ul id="mainNav">
-            <li><a href="#home" data-target="home" class="navlink">Главная</a></li>
-            <li><a href="#lectures" data-target="lectures" class="navlink">Лекции</a></li>
-            <li><a href="#presentations" data-target="presentations" class="navlink">Презентации</a></li>
-            <li><a href="#sculpture" data-target="sculpture" class="navlink">Скульптура</a></li>
-            <li><a href="#architecture" data-target="architecture" class="navlink">Архитектура</a></li>
-            <li><a href="#painting" data-target="painting" class="navlink">Живопись</a></li>
-            <li><a href="#religion" data-target="religion" class="navlink">Религия</a></li>
-            <li><a href="#life" data-target="life" class="navlink">Быт</a></li>
-            <li><a href="#contacts" data-target="contacts" class="navlink">Контакты</a></li>
-            <li><a class="cta" href="#" onclick="openAdmin()">Админ</a></li>
-          </ul>
-        </nav>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">КиО</div>
+      <div>
+        <h1>Культурология и общества</h1>
+        <p>Цифровой образовательный ресурс</p>
       </div>
     </div>
-  </header>
-
-  <main>
-    <!-- HOME / Banner -->
-    <section id="home" class="banner">
-      <div class="left">
-        <h2>Культурология и общества</h2>
-        <p>Культурология — это наука о культах, художественных практиках, религиозных и бытовых формах общественной жизни. Данный ресурс предоставляет учебные материалы, презентации и иллюстрации, предназначенные для углубленного изучения скульптуры, архитектуры, живописи, религии и быта.</p>
-        <div class="meta">Преподаватель: <strong>Середа Вера Геннадьевна</strong></div>
-        <div class="section-actions">
-          <a class="btn" href="#lectures" onclick="scrollToSection('lectures')">Перейти к лекциям</a>
-          <button class="btn secondary" onclick="openAdmin()">Добавить материал</button>
-        </div>
-      </div>
-      <div class="img"><img src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2d6b2b9b" alt="collage"></div>
-    </section>
-
-    <!-- Quick topics cards -->
-    <div class="sections">
-      <div class="card">
-        <h3>Скульптура</h3>
-        <p class="muted">Формы объёмного искусства, материалы, стили и символика.</p>
-      </div>
-      <div class="card">
-        <h3>Архитектура</h3>
-        <p class="muted">История архитектурных форм, техника, общественное значение.</p>
-      </div>
-      <div class="card">
-        <h3>Живопись</h3>
-        <p class="muted">Техники, жанры, ключевые эпохи и художники.</p>
-      </div>
+    <button class="burger" onclick="toggleMobile()">☰</button>
+    <nav>
+      <ul id="mainNav">
+        <li><a href="#home" class="navlink active">Главная</a></li>
+        <li><a href="#lectures" class="navlink">Лекции</a></li>
+        <li><a href="#presentations" class="navlink">Презентации</a></li>
+        <li><a href="#sculpture" class="navlink">Скульптура</a></li>
+        <li><a href="#architecture" class="navlink">Архитектура</a></li>
+        <li><a href="#painting" class="navlink">Живопись</a></li>
+        <li><a href="#religion" class="navlink">Религия</a></li>
+        <li><a href="#life" class="navlink">Быт</a></li>
+        <li><a class="btn" href="#" onclick="openAdmin()">Админ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <section id="home" class="banner">
+    <div style="flex:1">
+      <h2>Культурология и общества</h2>
+      <p>Изучение культурного наследия, искусства, религии и быта общества. Данный ресурс предоставляет учебные материалы, презентации и иллюстрации для углубленного изучения культурологии.</p>
+      <div class="meta">Преподаватель: Середа Вера Геннадьевна</div>
+      <div style="margin-top:12px;"><button class="btn" onclick="scrollToSection('lectures')">Перейти к лекциям</button></div>
     </div>
+    <div class="img"><img src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?q=80&w=1200&auto=format&fit=crop" alt="banner"></div>
+  </section>
 
-    <!-- LECTURES -->
-    <section id="lectures" class="content">
-      <h2>Лекции</h2>
-      <div class="section-body" id="lecturesBody">
-        <!-- lectures content inserted here -->
-      </div>
-      <div class="note">Через админ-панель можно добавлять новые лекции (текст, ссылка на YouTube или файл).</div>
-    </section>
+  <div id="contentArea">
+    <!-- Лекции, Презентации и Разделы будут сюда добавляться через JS -->
+  </div>
+</main>
+<footer>
+  <div class="footer-inner">
+    <div>Цифровой образовательный ресурс Середы Веры Геннадьевны,</div>
+    <div>Высший колледж «ASTANA POLYTECHNIC» акимата города Астаны</div>
+    <div>© 2023г. Все права защищены.</div>
+  </div>
+</footer>
 
-    <!-- PRESENTATIONS -->
-    <section id="presentations" class="content">
-      <h2>Презентации</h2>
-      <div class="section-body" id="presentationsBody">
-        <!-- presentations content inserted here -->
-      </div>
-      <div class="note">Загруженные презентации можно просматривать и скачивать.</div>
-    </section>
-
-    <!-- SCULPTURE -->
-    <section id="sculpture" class="content">
-      <h2>Скульптура</h2>
-      <div class="section-body" id="sculptureBody">
-        <!-- default text -->
-      </div>
-      <div class="note">Раздел для текстов и изображений по скульптуре.</div>
-    </section>
-
-    <!-- ARCHITECTURE -->
-    <section id="architecture" class="content">
-      <h2>Архитектура</h2>
-      <div class="section-body" id="architectureBody"></div>
-    </section>
-
-    <!-- PAINTING -->
-    <section id="painting" class="content">
-      <h2>Живопись</h2>
-      <div class="section-body" id="paintingBody"></div>
-    </section>
-
-    <!-- RELIGION -->
-    <section id="religion" class="content">
-      <h2>Религия</h2>
-      <div class="section-body" id="religionBody"></div>
-    </section>
-
-    <!-- LIFE / BYT -->
-    <section id="life" class="content">
-      <h2>Быт</h2>
-      <div class="section-body" id="lifeBody"></div>
-    </section>
-
-    <!-- CONTACTS -->
-    <section id="contacts" class="content">
-      <h2>Контакты</h2>
-      <div class="section-body">
-        <p>Для вопросов и предложений обращайтесь к преподавателю: <strong>Середа Вера Геннадьевна</strong>.</p>
-        <p class="muted">(Электронная почта и дополнительные контакты можно добавить в админке)</p>
-      </div>
-    </section>
-
-    <footer>
-      <div class="footer-inner">
-        <div>Цифровой образовательный ресурс Середы Веры Геннадьевны,</div>
-        <div>Высший колледж «ASTANA POLYTECHNIC» акимата города Астаны</div>
-        <div>© 2023г. Все права защищены.</div>
-      </div>
-    </footer>
-  </main>
-
-  <!-- Admin modal -->
-  <div id="adminModal" class="modal hidden">
-    <div class="panel">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-weight:700">Панель администратора</div>
-        <div style="font-size:13px;color:var(--muted)">Локальный администратор</div>
-      </div>
-
-      <!-- auth -->
-      <div id="authBox">
-        <label>Пароль администратора</label>
-        <input type="text" id="adminPassInput" placeholder="Введите пароль">
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button class="btn" onclick="loginAdmin()">Войти</button>
-          <button class="btn secondary" onclick="closeAdmin()">Отмена</button>
-        </div>
-      </div>
-
-      <!-- admin panel -->
-      <div id="adminPanel" class="hidden">
-        <label>Действие</label>
-        <select id="adminAction">
-          <option value="addLecture">Добавить лекцию</option>
-          <option value="addPresentation">Добавить презентацию</option>
-          <option value="addSectionText">Добавить текст в раздел</option>
-          <option value="addImage">Добавить изображение в раздел</option>
-        </select>
-
-        <div id="formArea" style="margin-top:10px">
-          <!-- dynamic form -->
-        </div>
-
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn" onclick="submitAdminForm()">Сохранить</button>
-          <button class="btn secondary" onclick="logoutAdmin()">Выйти</button>
-        </div>
-
-        <hr style="margin-top:10px;border-color:#efe3c8">
-        <div style="font-size:13px;color:var(--muted);">Список материалов (админ)</div>
-        <div id="adminList" style="margin-top:8px;max-height:220px;overflow:auto"></div>
-      </div>
-
+<!-- Admin modal -->
+<div id="adminModal" class="modal" style="display:none">
+  <div class="panel">
+    <h3>Админ-панель</h3>
+    <div id="authBox">
+      <label>Пароль администратора</label>
+      <input type="text" id="adminPassInput">
+      <button class="btn" onclick="loginAdmin()">Войти</button>
+      <button class="btn secondary" onclick="closeAdmin()">Отмена</button>
+    </div>
+    <div id="adminPanel" style="display:none; margin-top:12px;">
+      <label>Действие</label>
+      <select id="adminAction">
+        <option value="addLecture">Добавить лекцию</option>
+        <option value="addPresentation">Добавить презентацию</option>
+        <option value="addSectionText">Добавить текст в раздел</option>
+        <option value="addImage">Добавить изображение в раздел</option>
+      </select>
+      <div id="formArea"></div>
+      <button class="btn" onclick="submitAdminForm()">Сохранить</button>
+      <button class="btn secondary" onclick="logoutAdmin()">Выйти</button>
+      <div id="adminList" style="margin-top:12px; max-height:200px; overflow:auto;"></div>
     </div>
   </div>
+</div>
 
-  <script>
-    // ===== Storage keys and password ======
-    const STORAGE_KEY = 'kult_site_v3';
-    const ADMIN_FLAG = 'kult_admin_ok_v3';
-    const ADMIN_PASSWORD = 'Ua33333'; // fixed password (hidden in interface)
+<script>
+let adminOpen = false;
+function toggleMobile(){
+  const nav = document.querySelector('nav ul');
+  if(nav.style.display==='flex'){nav.style.display='none';}
+  else{nav.style.display='flex'; nav.style.flexDirection='column';}
+}
 
-    // initial sample texts & content
-    const defaultState = {
-      lectures: [
-        {id: 'l1', title: 'Введение в культурологию', text: 'Культурология изучает систему значений, художественные практики и формы коллективного сознания. Введение знакомит с основными понятиями, предметом и методологией дисциплины.'}
-      ],
-      presentations: [
-        {id: 'p1', title: 'Ренессанс: ключевые идеи', filename:'', link:'', note:'Пример презентации'}
-      ],
-      sectionsText: {
-        sculpture: `Скульптура как вид искусства включает в себя создание объёмных форм, отражающих идеалы, ритуалы и эстетические нормы общества. Исторический обзор показывает смену материалов и техники: от камня и бронзы до современных смешанных медиа. Важным является анализ символики, функции памятников и их места в общественной памяти.`,
-        architecture: `Архитектура отражает общественные и экономические условия своего времени. Изучение архитектуры включает композицию, планировку, конструктивные приёмы и материалологию. Особое внимание уделяется взаимосвязи архитектурных форм и социальной функции зданий.`,
-        painting: `Живопись изучается через призму техники, жанров и художественных течений. От древних фресок до современного авангарда — изменение техники и парадигм объясняет трансформацию способов выражения культурных смыслов.`,
-        religion: `Религиозные практики и верования формируют значительную часть культурной жизни: ритуалы, священные пространства, иконография и мифы — все это предмет культурологического анализа. Понимание религии требует междисциплинарного подхода.`,
-        life: `Быт и повседневная культура включают бытовые практики, элементы одежды, кухню, праздники и ритуалы жизненного цикла. Анализ быта позволяет увидеть структуру повседневного смысла и социальные нормы.`,
-      },
-      images: []
-    };
+const STORAGE_KEY='kult_site_live';
+const ADMIN_PASSWORD='Ua33333';
 
-    // load or initialize
-    function loadState(){ try{ const s = localStorage.getItem(STORAGE_KEY); if(!s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultState)); return defaultState; } return JSON.parse(s); }catch(e){ return defaultState } }
-    function saveState(st){ localStorage.setItem(STORAGE_KEY, JSON.stringify(st)); }
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 
-    // render sections initially
-    function renderAll(){
-      const st = loadState();
-      // lectures
-      const lectEl = document.getElementById('lecturesBody');
-      lectEl.innerHTML = '';
-      if(st.lectures.length===0) lectEl.innerHTML = '<p class="muted">Пока нет лекций. Добавьте через админ-панель.</p>';
-      st.lectures.forEach(l=>{ const div = document.createElement('div'); div.style.marginBottom='12px'; div.innerHTML = `<h3 style="margin:0">${escapeHtml(l.title)}</h3><p class="muted">${escapeHtml(l.text)}</p>`; lectEl.appendChild(div); });
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+if(!state.lectures) state={lectures:[], presentations:[], sections:{sculpture:'',architecture:'',painting:'',religion:'',life:''}, images:[]};
+function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); renderContent();}
 
-      // presentations
-      const presEl = document.getElementById('presentationsBody'); presEl.innerHTML='';
-      if(st.presentations.length===0) presEl.innerHTML = '<p class="muted">Пока нет презентаций.</p>';
-      st.presentations.forEach(p=>{ const div = document.createElement('div'); div.style.marginBottom='12px'; div.innerHTML = `<h3 style="margin:0">${escapeHtml(p.title)}</h3><p class="muted">${escapeHtml(p.note || '')}</p>`; presEl.appendChild(div); });
+function renderContent(){
+  const area = document.getElementById('contentArea'); area.innerHTML='';
+  // lectures
+  const lecturesHTML = '<section id="lectures" class="section-content"><h2>Лекции</h2><div class="section-body">'+state.lectures.map(l=>`<p><strong>${l.title}</strong><br>${l.text}</p>`).join('')+'</div></section>';
+  area.innerHTML+=lecturesHTML;
+  const presHTML = '<section id="presentations" class="section-content"><h2>Презентации</h2><div class="section-body">'+state.presentations.map(p=>`<p><strong>${p.title}</strong><br>${p.note||''}</p>`).join('')+'</div></section>';
+  area.innerHTML+=presHTML;
+  ['sculpture','architecture','painting','religion','life'].forEach(sec=>{
+    let secHTML=`<section id="${sec}" class="section-content"><h2>${sec.charAt(0).toUpperCase()+sec.slice(1)}</h2><div class="section-body">${state.sections[sec]}</div></section>`;
+    area.innerHTML+=secHTML;
+  });
+}
+renderContent();
 
-      // sections texts
-      document.getElementById('sculptureBody').innerHTML = formatText(st.sectionsText.sculpture);
-      document.getElementById('architectureBody').innerHTML = formatText(st.sectionsText.architecture);
-      document.getElementById('paintingBody').innerHTML = formatText(st.sectionsText.painting);
-      document.getElementById('religionBody').innerHTML = formatText(st.sectionsText.religion);
-      document.getElementById('lifeBody').innerHTML = formatText(st.sectionsText.life);
-
-      renderAdminList();
-    }
-
-    function formatText(raw){ return `<div style=\"white-space:pre-line;color:var(--muted);line-height:1.6\">${escapeHtml(raw)}</div>`; }
-
-    // Escape helper
-    function escapeHtml(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
-
-    // ===== Admin UI logic =====
-    const adminModal = document.getElementById('adminModal');
-    const authBox = document.getElementById('authBox');
-    const adminPanel = document.getElementById('adminPanel');
-
-    function openAdmin(){ adminModal.classList.remove('hidden'); checkAdminAuth(); }
-    function closeAdmin(){ adminModal.classList.add('hidden'); }
-
-    function checkAdminAuth(){ const ok = localStorage.getItem(ADMIN_FLAG) === '1'; if(ok){ authBox.style.display='none'; adminPanel.classList.remove('hidden'); buildAdminList(); buildForm(); } else { authBox.style.display='block'; adminPanel.classList.add('hidden'); } }
-
-    function loginAdmin(){ const v = document.getElementById('adminPassInput').value.trim(); if(v===ADMIN_PASSWORD){ localStorage.setItem(ADMIN_FLAG,'1'); checkAdminAuth(); document.getElementById('adminPassInput').value=''; } else { alert('Неверный пароль'); } }
-    function logoutAdmin(){ localStorage.removeItem(ADMIN_FLAG); checkAdminAuth(); }
-
-    // when adminAction changes, build proper form
-    document.getElementById('adminAction').addEventListener('change', buildForm);
-
-    function buildForm(){ const action = document.getElementById('adminAction').value; const area = document.getElementById('formArea'); area.innerHTML='';
-      if(action==='addLecture'){
-        area.innerHTML = `
-          <label>Название лекции</label>
-          <input type=\"text\" id=\"f_title\"> 
-          <label>Текст лекции</label>
-          <textarea id=\"f_text\"></textarea>
-          <label>Ссылка на видео (опционально)</label>
-          <input type=\"text\" id=\"f_link\">`;
-      } else if(action==='addPresentation'){
-        area.innerHTML = `
-          <label>Название презентации</label>
-          <input type=\"text\" id=\"f_title\"> 
-          <label>Краткое описание</label>
-          <input type=\"text\" id=\"f_note\"> 
-          <label>Файл (PDF/PPTX) — загрузите файл</label>
-          <input type=\"file\" id=\"f_file\">`;
-      } else if(action==='addSectionText'){
-        area.innerHTML = `
-          <label>Выберите раздел</label>
-          <select id=\"f_section\"> 
-            <option value=\"sculpture\">Скульптура</option>
-            <option value=\"architecture\">Архитектура</option>
-            <option value=\"painting\">Живопись</option>
-            <option value=\"religion\">Религия</option>
-            <option value=\"life\">Быт</option>
-          </select>
-          <label>Текст (новый абзац)</label>
-          <textarea id=\"f_section_text\"></textarea>
-          <div class=\"note\">Текст будет добавлен в конец раздела.</div>`;
-      } else if(action==='addImage'){
-        area.innerHTML = `
-          <label>Выберите раздел</label>
-          <select id=\"f_section_img\"> 
-            <option value=\"sculpture\">Скульптура</option>
-            <option value=\"architecture\">Архитектура</option>
-            <option value=\"painting\">Живопись</option>
-            <option value=\"religion\">Религия</option>
-            <option value=\"life\">Быт</option>
-          </select>
-          <label>Загрузите изображение (jpg/png)</label>
-          <input type=\"file\" id=\"f_image\"> 
-          <div class=\"note\">Изображение сохранится в localStorage (обратите внимание на размер).</div>`;
-      }
-    }
-
-    async function submitAdminForm(){ const action = document.getElementById('adminAction').value; const st = loadState();
-      if(action==='addLecture'){
-        const t = document.getElementById('f_title').value.trim(); const txt = document.getElementById('f_text').value.trim(); const link = document.getElementById('f_link').value.trim(); if(!t || !txt){ alert('Заполните название и текст'); return }
-        st.lectures.unshift({id:'l'+Date.now(), title:t, text:txt, link:link}); saveState(st); renderAll(); alert('Лекция добавлена');
-      } else if(action==='addPresentation'){
-        const t = document.getElementById('f_title').value.trim(); const note = document.getElementById('f_note').value.trim(); const fileEl = document.getElementById('f_file'); if(!t){ alert('Укажите название'); return }
-        if(fileEl.files && fileEl.files[0]){
-          const f = fileEl.files[0]; const base = await fileToDataURL(f); st.presentations.unshift({id:'p'+Date.now(), title:t, note:note, filename:f.name, fileData:base}); saveState(st); renderAll(); alert('Презентация загружена');
-        } else { st.presentations.unshift({id:'p'+Date.now(), title:t, note:note}); saveState(st); renderAll(); alert('Презентация добавлена (без файла)'); }
-      } else if(action==='addSectionText'){
-        const sec = document.getElementById('f_section').value; const text = document.getElementById('f_section_text').value.trim(); if(!text){ alert('Введите текст'); return }
-        st.sectionsText[sec] = (st.sectionsText[sec] || '') + '
-
-' + text; saveState(st); renderAll(); alert('Текст добавлен в раздел');
-      } else if(action==='addImage'){
-        const sec = document.getElementById('f_section_img').value; const fileEl = document.getElementById('f_image'); if(!fileEl.files || !fileEl.files[0]){ alert('Загрузите файл'); return }
-        const f = fileEl.files[0]; if(!f.type.startsWith('image/')){ alert('Выберите изображение'); return }
-        const base = await fileToDataURL(f); st.images.unshift({id:'i'+Date.now(), section:sec, title:f.name, data:base}); saveState(st); renderAll(); alert('Изображение добавлено');
-      }
-      buildAdminList();
-    }
-
-    // helper file to base64
-    function fileToDataURL(file){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = e=>rej(e); r.readAsDataURL(file); }); }
-
-    // admin list and delete
-    function buildAdminList(){ const el = document.getElementById('adminList'); el.innerHTML=''; const st = loadState();
-      function makeRow(title, subtype, id){ const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px solid #efe3c8'; div.innerHTML = `<div style=\"display:flex;justify-content:space-between;align-items:center\"><div><strong>${escapeHtml(title)}</strong><div style=\"color:var(--muted);font-size:13px\">${subtype}</div></div></div>`; const del = document.createElement('button'); del.className='btn secondary'; del.textContent='Удалить'; del.onclick = ()=>{ if(confirm('Удалить?')){ deleteById(id); buildAdminList(); renderAll(); } }; div.appendChild(del); return div; }
-
-      st.lectures.forEach(l=> el.appendChild(makeRow(l.title,'Lecture',l.id)));
-      st.presentations.forEach(p=> el.appendChild(makeRow(p.title,'Presentation',p.id)));
-      st.images.forEach(i=> el.appendChild(makeRow(i.title,'Image in '+i.section,i.id)));
-    }
-
-    function deleteById(id){ const st = loadState(); st.lectures = st.lectures.filter(x=>x.id!==id); st.presentations = st.presentations.filter(x=>x.id!==id); st.images = st.images.filter(x=>x.id!==id); saveState(st); }
-
-    // show images in sections if any
-    function renderImages(){ const st = loadState(); if(!st.images || st.images.length===0) return; st.images.forEach(img=>{ const target = document.getElementById(img.section+'Body'); if(target){ const el = document.createElement('div'); el.style.marginTop='12px'; el.innerHTML = `<img src="${img.data}" alt="${escapeHtml(img.title)}" style="max-width:100%;border:1px solid #efe3c8;border-radius:8px">`; target.appendChild(el); } }); }
-
-    // delete helper
-    function deleteMaterialById(id){ deleteById(id); renderAll(); }
-
-    // utils
-    function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}); }
-
-    // mobile nav
-    function toggleMobile(){ const nav = document.getElementById('mainNav'); if(nav.style.display==='flex'){ nav.style.display='none'; } else { nav.style.display='flex'; nav.style.flexDirection='column'; nav.style.position='absolute'; nav.style.right='18px'; nav.style.top='74px'; nav.style.background='#fff'; nav.style.padding='12px'; nav.style.border='1px solid #efe3c8'; nav.style.borderRadius='8px'; } }
-
-    // init nav anchors
-    document.querySelectorAll('.navlink').forEach(a=>{ a.addEventListener('click', e=>{ e.preventDefault(); const t = a.getAttribute('data-target'); document.getElementById(t).scrollIntoView({behavior:'smooth'}); // highlight
-      document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active')); a.classList.add('active'); if(window.innerWidth<=880){ toggleMobile(); } }); });
-
-    // initial render
-    renderAll(); renderImages();
-
-    // expose some functions to window
-    window.openAdmin = openAdmin; window.closeAdmin = closeAdmin; window.loginAdmin = loginAdmin; window.logoutAdmin = logoutAdmin; window.submitAdminForm = submitAdminForm; window.renderAll = renderAll;
-
-  </script>
+function openAdmin(){document.getElementById('adminModal').style.display='flex'; checkAdmin();}
+function closeAdmin(){document.getElementById('adminModal').style.display='none';}
+function checkAdmin(){const ok = localStorage.getItem('admin_logged')==='1';
+if(ok){document.getElementById('authBox').style.display='none'; document.getElementById('adminPanel').style.display='block'; buildForm();} else {document.getElementById('authBox').style.display='block'; document.getElementById('adminPanel').style.display='none';}}
+function loginAdmin(){const val=document.getElementById('adminPassInput').value; if(val===ADMIN_PASSWORD){localStorage.setItem('admin_logged','1');checkAdmin();} else alert('Неверный пароль');}
+function logoutAdmin(){localStorage.removeItem('admin_logged'); checkAdmin();}
+function buildForm(){
+const action = document.getElementById('adminAction').value;
+const area = document.getElementById('formArea'); area.innerHTML='';
+if(action==='addLecture'){area.innerHTML=`<label>Название</label><input id='f_title'><label>Текст</label><textarea id='f_text'></textarea>`;}
+if(action==='addPresentation'){area.innerHTML=`<label>Название</label><input id='f_title'><label>Описание</label><input id='f_note'>`;}
+if(action==='addSectionText'){area.innerHTML=`<label>Раздел</label><select id='f_section'><option value='sculpture'>Скульптура</option><option value='architecture'>Архитектура</option><option value='painting'>Живопись</option><option value='religion'>Религия</option><option value='life'>Быт</option></select><label>Текст</label><textarea id='f_section_text'></textarea>`;}
+}
+document.getElementById('adminAction').addEventListener('change',buildForm);
+async function submitAdminForm(){
+const action=document.getElementById('adminAction').value;
+if(action==='addLecture'){const t=document.getElementById('f_title').value; const txt=document.getElementById('f_text').value; if(!t||!txt){alert('Заполните все поля'); return;} state.lectures.unshift({title:t,text:txt}); save();}
+if(action==='addPresentation'){const t=document.getElementById('f_title').value; const note=document.getElementById('f_note').value; if(!t){alert('Заполните название'); return;} state.presentations.unshift({title:t,note:note}); save();}
+if(action==='addSectionText'){const sec=document.getElementById('f_section').value; const txt=document.getElementById('f_section_text').value; state.sections[sec]+='\n\n'+txt; save();}
+}
+</script>
 </body>
 </html>
