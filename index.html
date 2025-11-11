@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Культурология и общества</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724; /* deep navy */
+      --card:#0b1030; /* darker */
+      --accent1:#7c3aed; /* purple */
+      --accent2:#06b6d4; /* cyan */
+      --accent3:#f59e0b; /* amber */
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Arial; margin:0; background:linear-gradient(180deg,var(--bg),#071024); color:#e6eef8; -webkit-font-smoothing:antialiased}
+    .container{max-width:1100px;margin:32px auto;padding:24px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:18px}
+    nav a{color:var(--muted);text-decoration:none;margin-left:14px}
+    nav a.active{color:white}
+
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:24px;margin-top:24px}
+    .hero-card{background:var(--card);border-radius:16px;padding:24px;box-shadow:0 8px 30px rgba(2,6,23,0.7)}
+    h1{margin:0;font-size:28px}
+    p.lead{color:var(--muted);margin-top:8px}
+
+    .searchbar{display:flex;gap:12px;margin-top:12px}
+    .searchbar input, .searchbar select{flex:1;padding:10px 12px;border-radius:10px;border:0;background:var(--glass);color:inherit}
+    .btn{background:linear-gradient(90deg,var(--accent1),var(--accent2));border:0;color:white;padding:10px 14px;border-radius:10px;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02), transparent);padding:16px;border-radius:12px}
+    .card h3{margin:0 0 8px 0}
+    .meta{font-size:13px;color:var(--muted)}
+
+    .full-width{grid-column:1/-1}
+
+    .topics{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .tag{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:13px}
+
+    footer{margin-top:40px;color:var(--muted);text-align:center}
+
+    /* Admin modal */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;z-index:50}
+    .modal .panel{width:820px;background:linear-gradient(180deg,#071022,#07122a);padding:18px;border-radius:12px}
+    label{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
+    input[type=text], textarea, select{width:100%;padding:10px;border-radius:8px;border:0;background:rgba(255,255,255,0.03);color:inherit}
+    textarea{min-height:120px}
+
+    .small{font-size:13px;color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width:980px){.hero{grid-template-columns:1fr} .grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.grid{grid-template-columns:1fr} nav a{display:none}}
+
+    .card .thumb{height:130px;border-radius:8px;background:linear-gradient(180deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;color:#00101a;font-weight:700}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    .pill{padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);font-size:13px}
+    .grid-empty{padding:28px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">КиО</div>
+        <div>
+          <div style="font-weight:800">Культурология и общества</div>
+          <div style="font-size:13px;color:var(--muted)">Платформа для лекций, презентаций и исследований</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#" class="active" onclick="scrollToSection('home')">Главная</a>
+        <a href="#" onclick="scrollToSection('lectures')">Лекции</a>
+        <a href="#" onclick="scrollToSection('presentations')">Презентации</a>
+        <a href="#" onclick="scrollToSection('gallery')">Галерея</a>
+        <a href="#" onclick="openAdmin()">Админ</a>
+      </nav>
+    </header>
+
+    <section id="home" class="hero">
+      <div class="hero-card">
+        <h1>Культурология и общества</h1>
+        <p class="lead">Коллекция лекций, презентаций, галерей и материалов по темам: скульптура, архитектура, живопись, религия, быт и многое другое. Яркий современный дизайн — всё для удобного обучения.</p>
+
+        <div class="searchbar">
+          <input id="searchInput" placeholder="Поиск по названию, описанию, тегам" oninput="renderAll()">
+          <select id="filterCategory" onchange="renderAll()">
+            <option value="all">Все темы</option>
+            <option value="Скульптура">Скульптура</option>
+            <option value="Архитектура">Архитектура</option>
+            <option value="Живопись">Живопись</option>
+            <option value="Религия">Религия</option>
+            <option value="Быт">Быт</option>
+            <option value="Другие">Другие</option>
+          </select>
+          <button class="btn ghost" onclick="openAdmin()">Добавить материал</button>
+        </div>
+
+        <div class="topics" id="topicsList">
+          <!-- dynamic tags -->
+        </div>
+
+      </div>
+
+      <aside class="hero-card">
+        <h3>Быстрый доступ</h3>
+        <div class="pill">Лекции: <span id="countLectures">0</span></div>
+        <div class="pill">Презентации: <span id="countPpts">0</span></div>
+        <div class="pill">Галерея: <span id="countGallery">0</span></div>
+
+        <hr style="margin:12px 0;border-color:rgba(255,255,255,0.04)">
+        <div class="small">Поддерживаемые форматы файлов: PDF, PPTX (скачивается), изображения (jpg/png), ссылки на YouTube.</div>
+        <div style="margin-top:12px"><button class="btn" onclick="openAdmin()">Открыть панель администратора</button></div>
+      </aside>
+    </section>
+
+    <section id="lectures" class="full-width" style="margin-top:18px">
+      <h2>Лекции</h2>
+      <div id="lecturesGrid" class="grid"></div>
+    </section>
+
+    <section id="presentations" class="full-width" style="margin-top:18px">
+      <h2>Презентации</h2>
+      <div id="pptGrid" class="grid"></div>
+    </section>
+
+    <section id="gallery" class="full-width" style="margin-top:18px">
+      <h2>Галерея — скульптура, архитектура, живопись, религия, быт</h2>
+      <div id="galleryGrid" class="grid"></div>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Культурология и общества — создано для учебы</div>
+    </footer>
+  </div>
+
+  <!-- Admin modal (hidden by default) -->
+  <div id="adminModal" class="modal" style="display:none">
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700">Панель администратора</div>
+        <div style="font-size:13px;color:var(--muted)">Вход: пароль сохраняется в localStorage</div>
+      </div>
+
+      <div id="authBox" style="margin-top:12px">
+        <label>Пароль администратора</label>
+        <input type="text" id="adminPassInput" placeholder="Введите пароль (по умолчанию admin123)">
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" onclick="loginAdmin()">Войти</button>
+          <button class="btn ghost" onclick="closeAdmin()">Отмена</button>
+        </div>
+      </div>
+
+      <div id="adminPanel" style="display:none;margin-top:12px">
+        <label>Тип материала</label>
+        <select id="materialType">
+          <option value="lecture">Лекция (текст/видео)</option>
+          <option value="presentation">Презентация (PDF/PPTX)</option>
+          <option value="gallery">Галерея (изображение)</option>
+        </select>
+
+        <label>Название</label>
+        <input type="text" id="matTitle" placeholder="Например: Введение в культурологию">
+
+        <label>Тема (категория)</label>
+        <select id="matCategory">
+          <option>Скульптура</option>
+          <option>Архитектура</option>
+          <option>Живопись</option>
+          <option>Религия</option>
+          <option>Быт</option>
+          <option>Другие</option>
+        </select>
+
+        <label>Краткое описание</label>
+        <textarea id="matDesc" placeholder="Краткое описание для карточки..."></textarea>
+
+        <label>Теги (через запятую)</label>
+        <input type="text" id="matTags" placeholder="например: теория, ренессанс">
+
+        <label>Файл / ссылка / изображение</label>
+        <input type="file" id="matFile">
+        <input type="text" id="matLink" placeholder="Ссылка на видео (YouTube) — опционально">
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" onclick="saveMaterial()">Сохранить</button>
+          <button class="btn ghost" onclick="logoutAdmin()">Выйти</button>
+        </div>
+
+        <hr style="margin-top:10px;border-color:rgba(255,255,255,0.04)">
+        <div style="font-size:13px;color:var(--muted);">Список материалов (админ)</div>
+        <div id="adminList" style="margin-top:8px;max-height:220px;overflow:auto"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ========== Utilities & storage ============
+    const STORAGE_KEY = 'kultmaterials_v1';
+    const ADMIN_PASS_KEY = 'kult_admin_pass';
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function loadData(){
+      try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      }catch(e){return []}
+    }
+    function saveData(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+    // sample initial data if empty
+    if(!localStorage.getItem(STORAGE_KEY)){
+      const sample = [
+        {id:1,type:'lecture',title:'Введение в культурологию',category:'Другие',desc:'Общее представление о предмете культурологии',tags:['теория','введение'],date:Date.now()},
+        {id:2,type:'presentation',title:'Ренессанс в живописи',category:'Живопись',desc:'Презентация по ренессансу',tags:['ренессанс'],date:Date.now()},
+      ];
+      saveData(sample);
+    }
+
+    // ========== Rendering ============
+    function renderAll(){
+      const data = loadData();
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
+      const cat = document.getElementById('filterCategory').value;
+
+      const lectures = data.filter(d=>d.type==='lecture' && matchFilter(d, search, cat));
+      const ppts = data.filter(d=>d.type==='presentation' && matchFilter(d, search, cat));
+      const gallery = data.filter(d=>d.type==='gallery' && matchFilter(d, search, cat));
+
+      document.getElementById('countLectures').textContent = lectures.length;
+      document.getElementById('countPpts').textContent = ppts.length;
+      document.getElementById('countGallery').textContent = gallery.length;
+
+      renderGrid('lecturesGrid', lectures);
+      renderGrid('pptGrid', ppts);
+      renderGrid('galleryGrid', gallery);
+      renderTopics(data);
+      renderAdminList();
+    }
+
+    function matchFilter(item, search, cat){
+      if(cat!=='all' && item.category!==cat) return false;
+      if(!search) return true;
+      const hay = (item.title + ' ' + (item.desc||'') + ' ' + (item.tags||[]).join(' ')).toLowerCase();
+      return hay.includes(search);
+    }
+
+    function renderGrid(elementId, items){
+      const el = document.getElementById(elementId);
+      el.innerHTML = '';
+      if(items.length===0){ el.innerHTML = '<div class="grid-empty">Пусто — добавьте материалы через панель администратора</div>'; return }
+      for(const it of items){
+        const card = document.createElement('div'); card.className='card';
+        const thumb = document.createElement('div'); thumb.className='thumb';
+        if(it.thumbnailData){ const img = document.createElement('img'); img.src = it.thumbnailData; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; img.style.borderRadius='8px'; thumb.innerHTML=''; thumb.appendChild(img);
+        } else {
+          thumb.textContent = it.title[0] || 'K';
+        }
+        card.appendChild(thumb);
+        const h = document.createElement('h3'); h.textContent = it.title; card.appendChild(h);
+        const m = document.createElement('div'); m.className='meta'; m.textContent = it.category + ' • ' + (new Date(it.date).toLocaleDateString()); card.appendChild(m);
+        const p = document.createElement('p'); p.textContent = it.desc || ''; p.style.marginTop='8px'; p.style.color='var(--muted)'; card.appendChild(p);
+        const controls = document.createElement('div'); controls.className='controls';
+
+        if(it.type==='lecture'){
+          const btnView = document.createElement('button'); btnView.className='pill'; btnView.textContent='Открыть'; btnView.onclick=()=>openLectureModal(it);
+          controls.appendChild(btnView);
+        }
+        if(it.type==='presentation'){
+          if(it.fileData){
+            const btnDown = document.createElement('button'); btnDown.className='pill'; btnDown.textContent='Скачать'; btnDown.onclick=()=>downloadFile(it);
+            controls.appendChild(btnDown);
+            const btnView = document.createElement('button'); btnView.className='pill'; btnView.textContent='Просмотр (PDF)'; btnView.onclick=()=>openFilePreview(it);
+            controls.appendChild(btnView);
+          } else if(it.link){
+            const a = document.createElement('a'); a.className='pill'; a.textContent='Открыть ссылку'; a.href=it.link; a.target='_blank'; controls.appendChild(a);
+          }
+        }
+        if(it.type==='gallery'){
+          const btn = document.createElement('button'); btn.className='pill'; btn.textContent='Посмотреть'; btn.onclick=()=>openImageModal(it); controls.appendChild(btn);
+        }
+
+        // tags
+        if(it.tags && it.tags.length>0){
+          const tg = document.createElement('div'); tg.style.marginLeft='auto'; tg.style.display='flex'; tg.style.gap='6px';
+          it.tags.slice(0,3).forEach(t=>{ const s=document.createElement('div'); s.className='tag'; s.textContent=t; tg.appendChild(s); });
+          card.appendChild(tg);
+        }
+
+        card.appendChild(controls);
+        el.appendChild(card);
+      }
+    }
+
+    function renderTopics(data){
+      const el = document.getElementById('topicsList'); el.innerHTML='';
+      const counts = {};
+      data.forEach(d=>{ counts[d.category] = (counts[d.category]||0)+1 });
+      for(const k of ['Скульптура','Архитектура','Живопись','Религия','Быт','Другие']){
+        const div = document.createElement('div'); div.className='tag'; div.textContent = k + (counts[k]?(' • '+counts[k]):''); div.onclick = ()=>{ document.getElementById('filterCategory').value=k; renderAll(); };
+        el.appendChild(div);
+      }
+    }
+
+    // ========== Admin actions ============
+    function openAdmin(){ document.getElementById('adminModal').style.display='flex'; checkAuth(); }
+    function closeAdmin(){ document.getElementById('adminModal').style.display='none'; }
+    function checkAuth(){ const pass = localStorage.getItem(ADMIN_PASS_KEY); if(pass){ document.getElementById('authBox').style.display='none'; document.getElementById('adminPanel').style.display='block'; } else { document.getElementById('authBox').style.display='block'; document.getElementById('adminPanel').style.display='none'; } }
+    function loginAdmin(){ const v = document.getElementById('adminPassInput').value.trim() || 'admin123'; localStorage.setItem(ADMIN_PASS_KEY, v); checkAuth(); }
+    function logoutAdmin(){ localStorage.removeItem(ADMIN_PASS_KEY); checkAuth(); }
+
+    function saveMaterial(){
+      const type = document.getElementById('materialType').value;
+      const title = document.getElementById('matTitle').value.trim();
+      if(!title){ alert('Укажите название'); return }
+      const category = document.getElementById('matCategory').value;
+      const desc = document.getElementById('matDesc').value.trim();
+      const tags = document.getElementById('matTags').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const fileInput = document.getElementById('matFile');
+      const link = document.getElementById('matLink').value.trim();
+
+      const data = loadData();
+      const id = Date.now();
+      const item = {id,type,title,category,desc,tags,date:Date.now()};
+
+      if(fileInput.files && fileInput.files[0]){
+        const f = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e){
+          const base = e.target.result; // data:*/*;base64,...
+          item.fileData = base;
+          item.filename = f.name;
+          item.mime = f.type;
+          // thumbnail for images and first page of pdf not generated; for images we use base as thumbnail
+          if(f.type.startsWith('image/')){ item.thumbnailData = base; item.type='gallery'; }
+          data.push(item); saveData(data); renderAll(); alert('Материал сохранён'); }
+        reader.readAsDataURL(f);
+      } else {
+        if(link) item.link = link;
+        data.push(item); saveData(data); renderAll(); alert('Материал сохранён (без файла)');
+      }
+
+      // reset form
+      document.getElementById('matTitle').value=''; document.getElementById('matDesc').value=''; document.getElementById('matTags').value=''; document.getElementById('matFile').value=''; document.getElementById('matLink').value='';
+    }
+
+    function renderAdminList(){
+      const el = document.getElementById('adminList'); el.innerHTML='';
+      const data = loadData().slice().sort((a,b)=>b.date-a.date);
+      for(const it of data){
+        const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px solid rgba(255,255,255,0.02)';
+        div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${it.title}</strong><div class='small'>${it.type} • ${it.category}</div></div></div>`;
+        const btnDel = document.createElement('button'); btnDel.className='pill'; btnDel.textContent='Удалить'; btnDel.onclick=()=>{ if(confirm('Удалить материал?')){ deleteMaterial(it.id); } };
+        div.appendChild(btnDel);
+        el.appendChild(div);
+      }
+    }
+    function deleteMaterial(id){ const d = loadData().filter(x=>x.id!==id); saveData(d); renderAll(); }
+
+    // ========== Viewing & downloads ============
+    function openLectureModal(item){
+      // simple modal: show description and link if present
+      const w = window.open('','_blank','noopener');
+      w.document.write(`<html><head><title>${item.title}</title><meta charset="utf-8"></head><body style="font-family:Inter,Arial;padding:20px;background:#071024;color:#e6eef8"><h2>${item.title}</h2><div style="color:#94a3b8">${item.category}</div><p>${item.desc||''}</p>`);
+      if(item.link){
+        // embed youtube if link contains youtube
+        if(item.link.includes('youtube.com')||item.link.includes('youtu.be')){
+          const vid = parseYouTubeID(item.link);
+          if(vid) w.document.write(`<iframe width="800" height="450" src="https://www.youtube.com/embed/${vid}" frameborder="0" allowfullscreen></iframe>`);
+        } else {
+          w.document.write(`<a href="${item.link}" target="_blank">Открыть ссылку</a>`);
+        }
+      }
+      if(item.fileData){
+        // if pdf show iframe
+        if(item.mime==='application/pdf') w.document.write(`<iframe src="${item.fileData}" width="900" height="600"></iframe>`);
+        else w.document.write(`<a href="${item.fileData}" download="${item.filename}">Скачать файл</a>`);
+      }
+      w.document.write('</body></html>');
+    }
+
+    function parseYouTubeID(url){
+      try{
+        const u = new URL(url);
+        if(u.hostname.includes('youtube.com')) return u.searchParams.get('v');
+        if(u.hostname.includes('youtu.be')) return u.pathname.slice(1);
+      }catch(e){return null}
+    }
+
+    function downloadFile(item){
+      const a = document.createElement('a'); a.href = item.fileData; a.download = item.filename || 'file'; document.body.appendChild(a); a.click(); a.remove(); }
+
+    function openFilePreview(item){ window.open(item.fileData,'_blank'); }
+    function openImageModal(item){ const w = window.open('','_blank'); w.document.write(`<html><head><meta charset="utf-8"><title>${item.title}</title></head><body style="margin:0;display:flex;align-items:center;justify-content:center;background:#071024"><img src='${item.fileData || item.thumbnailData}' style='max-width:100vw;max-height:100vh'></body></html>`); }
+
+    // ========== Init ============
+    renderAll();
+    // add keyboard shortcut: Ctrl+Alt+A открывает админ
+    window.addEventListener('keydown', e=>{ if(e.ctrlKey && e.altKey && e.key.toLowerCase()==='a') openAdmin(); });
+
+    // simple navigation
+    function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+    window.openAdmin = openAdmin; window.closeAdmin = closeAdmin; window.loginAdmin = loginAdmin; window.logoutAdmin = logoutAdmin; window.saveMaterial = saveMaterial; window.renderAll = renderAll; window.openLectureModal = openLectureModal;
+  </script>
+</body>
+</html>
