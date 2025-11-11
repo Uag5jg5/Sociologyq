@@ -113,7 +113,6 @@ let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
 if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',architecture:'',painting:'',religion:'',life:''}};
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); renderContent();}
 function toggleMobile(){const nav=document.querySelector('nav ul');nav.style.display=(nav.style.display==='flex')?'none':'flex';nav.style.flexDirection='column';}
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 function renderContent(){const area=document.getElementById('contentArea'); area.innerHTML='';
 ['lectures','presentations','sculpture','architecture','painting','religion','life'].forEach(sec=>{
 let title={'lectures':'📖 Лекции','presentations':'📊 Презентации','sculpture':'🗿 Скульптура','architecture':'🏛 Архитектура','painting':'🎨 Живопись','religion':'⛪ Религия','life':'🏠 Быт'}[sec];
@@ -131,8 +130,8 @@ function loginAdmin(){let val=document.getElementById('adminPassInput').value;if
 function logoutAdmin(){localStorage.removeItem('admin_logged'); checkAdmin();}
 function buildAdminPanel(){
 let panel=document.getElementById('adminPanel');
-panel.innerHTML=`<p>Здесь вы можете добавлять и удалять материалы</p>`;
-// Для простоты можно доработать интерфейс добавления/удаления вручную
+panel.innerHTML=`<p>Здесь можно добавлять и удалять материалы.</p>`;
+// TODO: добавить формы добавления и удаления полностью функционально
 }
 </script>
 </body>
