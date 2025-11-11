@@ -22,7 +22,7 @@ header{position:fixed; top:0; left:0; right:0; background:rgba(255,255,255,0.95)
 .brand{display:flex; align-items:center; gap:12px;}
 .logo{width:56px; height:56px; border-radius:12px; background:linear-gradient(180deg,var(--gold),var(--gold-light)); display:flex; justify-content:center; align-items:center; color:#fff; font-weight:700; font-family:'Playfair Display'; font-size:20px;}
 nav ul{display:flex; gap:14px; list-style:none;}
-nav a{text-decoration:none; color:var(--text); padding:8px 14px; border-radius:10px; font-weight:500; transition:0.3s;}
+nav a{text-decoration:none; color:var(--text); padding:8px 14px; border-radius:10px; font-weight:500; transition:0.3s; display:flex; align-items:center; gap:6px;}
 nav a:hover, nav a.active{background:var(--gold-light); color:#111;}
 .burger{display:none; font-size:28px; background:none; border:none; cursor:pointer;}
 main{max-width:var(--maxw); margin:100px auto 60px; padding:18px;}
@@ -33,11 +33,11 @@ main{max-width:var(--maxw); margin:100px auto 60px; padding:18px;}
 .banner .img{flex:1 1 300px; border-radius:12px; overflow:hidden;}
 .banner .img img{width:100%; height:100%; object-fit:cover; display:block;}
 .section-content{margin-top:28px;}
-.section-content h2{margin-bottom:14px; font-size:24px; color:var(--gold);}
+.section-content h2{margin-bottom:14px; font-size:24px; color:var(--gold); display:flex; align-items:center; gap:6px;}
 .section-body{border:1px solid #f2e9d6; padding:16px; border-radius:var(--radius); background:#fff; display:flex; flex-direction:column; gap:12px;}
-.card{border:1px solid #f4e1b3; border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; gap:6px; box-shadow:0 4px 8px rgba(0,0,0,0.05); transition:0.3s;}
+.card{border:1px solid #f4e1b3; border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; gap:6px; box-shadow:0 4px 8px rgba(0,0,0,0.05); transition:0.3s; opacity:0; transform:translateY(20px);}
 .card img{width:100%; border-radius:var(--radius);}
-.card:hover{transform:translateY(-2px); box-shadow:0 8px 12px rgba(0,0,0,0.1);}
+.card.show{opacity:1; transform:translateY(0); transition:0.5s;}
 .btn{padding:8px 14px; border-radius:12px; background:var(--gold); color:#111; border:none; cursor:pointer; font-weight:600; transition:0.3s;}
 .btn:hover{background:var(--gold-light);}
 .btn.secondary{background:transparent; border:1px solid #f3dec1;}
@@ -66,14 +66,14 @@ nav ul{display:none; flex-direction:column; background:#fff; position:absolute; 
 <button class="burger" onclick="toggleMobile()">☰</button>
 <nav>
 <ul id="mainNav">
-<li><a href="#home" class="navlink active">Главная</a></li>
-<li><a href="#lectures" class="navlink">Лекции</a></li>
-<li><a href="#presentations" class="navlink">Презентации</a></li>
-<li><a href="#sculpture" class="navlink">Скульптура</a></li>
-<li><a href="#architecture" class="navlink">Архитектура</a></li>
-<li><a href="#painting" class="navlink">Живопись</a></li>
-<li><a href="#religion" class="navlink">Религия</a></li>
-<li><a href="#life" class="navlink">Быт</a></li>
+<li><a href="#home" class="navlink active">🏠 Главная</a></li>
+<li><a href="#lectures" class="navlink">📖 Лекции</a></li>
+<li><a href="#presentations" class="navlink">📊 Презентации</a></li>
+<li><a href="#sculpture" class="navlink">🗿 Скульптура</a></li>
+<li><a href="#architecture" class="navlink">🏛 Архитектура</a></li>
+<li><a href="#painting" class="navlink">🎨 Живопись</a></li>
+<li><a href="#religion" class="navlink">⛪ Религия</a></li>
+<li><a href="#life" class="navlink">🏠 Быт</a></li>
 <li><a class="btn" href="#" onclick="openAdmin()">Админ</a></li>
 </ul>
 </nav>
@@ -135,16 +135,23 @@ if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',a
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); renderContent();}
 function renderContent(){
 const area=document.getElementById('contentArea'); area.innerHTML='';
-const lecturesHTML='<section id="lectures" class="section-content"><h2>Лекции</h2><div class="section-body">'+state.lectures.map(l=>`<div class="card"><strong>${l.title}</strong><p>${l.text}</p></div>`).join('')+'</div></section>';
+const lecturesHTML='<section id="lectures" class="section-content"><h2>📖 Лекции</h2><div class="section-body">'+state.lectures.map(l=>`<div class="card"> <strong>${l.title}</strong><p>${l.text}</p></div>`).join('')+'</div></section>';
 area.innerHTML+=lecturesHTML;
-const presHTML='<section id="presentations" class="section-content"><h2>Презентации</h2><div class="section-body">'+state.presentations.map(p=>`<div class="card"><strong>${p.title}</strong><p>${p.note||''}</p></div>`).join('')+'</div></section>';
+const presHTML='<section id="presentations" class="section-content"><h2>📊 Презентации</h2><div class="section-body">'+state.presentations.map(p=>`<div class="card"><strong>${p.title}</strong><p>${p.note||''}</p></div>`).join('')+'</div></section>';
 area.innerHTML+=presHTML;
 ['sculpture','architecture','painting','religion','life'].forEach(sec=>{
-let secHTML=`<section id="${sec}" class="section-content"><h2>${sec.charAt(0).toUpperCase()+sec.slice(1)}</h2><div class="section-body">${state.sections[sec]}</div></section>`;
+let secHTML=`<section id="${sec}" class="section-content"><h2>${getEmoji(sec)} ${sec.charAt(0).toUpperCase()+sec.slice(1)}</h2><div class="section-body">${state.sections[sec]}</div></section>`;
 area.innerHTML+=secHTML;
 });
+animateCards();
 }
+function getEmoji(sec){switch(sec){case 'sculpture':return '🗿';case 'architecture':return '🏛';case 'painting':return '🎨';case 'religion':return '⛪';case 'life':return '🏠';default:return ''}}
 renderContent();
+function animateCards(){
+document.querySelectorAll('.card').forEach((el,i)=>{
+setTimeout(()=>{el.classList.add('show');},i*100);
+});
+}
 function openAdmin(){document.getElementById('adminModal').style.display='flex'; checkAdmin();}
 function closeAdmin(){document.getElementById('adminModal').style.display='none';}
 function checkAdmin(){const ok=localStorage.getItem('admin_logged')==='1';
@@ -164,7 +171,7 @@ function submitAdminForm(){
 const action=document.getElementById('adminAction').value;
 if(action==='addLecture'){const t=document.getElementById('f_title').value; const txt=document.getElementById('f_text').value; if(!t||!txt){alert('Заполните все поля'); return;} state.lectures.unshift({title:t,text:txt}); save();}
 if(action==='addPresentation'){const t=document.getElementById('f_title').value; const note=document.getElementById('f_note').value; if(!t){alert('Заполните название'); return;} state.presentations.unshift({title:t,note:note}); save();}
-if(action==='addSectionText'){const sec=document.getElementById('f_section').value; const txt=document.getElementById('f_section_text').value; state.sections[sec]+='<div class="card"><p>'+txt+'</p></div>'; save();}
+if(action==='addSectionText'){const sec=document.getElementById('f_section').value; const txt=document.getElementById('f_section_text').value; state.sections[sec]+=`<div class="card"><p>${txt}</p></div>`; save();}
 if(action==='addImageText'){const sec=document.getElementById('f_img_section').value; const txt=document.getElementById('f_img_text').value; const url=document.getElementById('f_img_url').value; if(!txt||!url){alert('Заполните текст и ссылку на изображение'); return;} state.sections[sec]+=`<div class="card"><p>${txt}</p><img src='${url}'></div>`; save();}
 }
 </script>
