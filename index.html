@@ -136,9 +136,9 @@ if(!state.lectures) state={lectures:[],presentations:[],sections:{sculpture:'',a
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); renderContent();}
 function renderContent(){
 const area=document.getElementById('contentArea'); area.innerHTML='';
-const lecturesHTML='<section id="lectures" class="section-content"><h2>📖 Лекции</h2><div class="section-body">'+state.lectures.map((l,i)=>`<div class="card"><button class="deleteBtn" onclick="deleteItem(\'lectures\',${i})">×</button><strong>${l.title}</strong><p>${l.text}</p></div>`).join('')+'</div></section>';
+const lecturesHTML='<section id="lectures" class="section-content"><h2>📖 Лекции</h2><div class="section-body">'+state.lectures.map((l,i)=>`<div class="card"><strong>${l.title}</strong><p>${l.text}</p></div>`).join('')+'</div></section>';
 area.innerHTML+=lecturesHTML;
-const presHTML='<section id="presentations" class="section-content"><h2>📊 Презентации</h2><div class="section-body">'+state.presentations.map((p,i)=>`<div class="card"><button class="deleteBtn" onclick="deleteItem(\'presentations\',${i})">×</button><strong>${p.title}</strong><p>${p.note||''}</p></div>`).join('')+'</div></section>';
+const presHTML='<section id="presentations" class="section-content"><h2>📊 Презентации</h2><div class="section-body">'+state.presentations.map((p,i)=>`<div class="card"><button class="deleteBtn" onclick="deleteItem('presentations',${i})">×</button><strong>${p.title}</strong><p>${p.note||''}</p></div>`).join('')+'</div></section>';
 area.innerHTML+=presHTML;
 ['sculpture','architecture','painting','religion','life'].forEach(sec=>{
 let secHTML=`<section id="${sec}" class="section-content"><h2>${getEmoji(sec)} ${sec.charAt(0).toUpperCase()+sec.slice(1)}</h2><div class="section-body">`+state.sections[sec].split('|').map((item,i)=>item?`<div class="card"><button class="deleteBtn" onclick="deleteItemSection('${sec}',${i})">×</button>${item}</div>`:'').join('')+`</div></section>`;
@@ -186,9 +186,12 @@ reader.readAsDataURL(file);
 }
 }
 function deleteItem(section,index){
+if(localStorage.getItem('admin_logged')==='1'){
 if(confirm('Удалить этот элемент?')){
 state[section].splice(index,1); save();
 }}
+else alert('Удалять материалы может только администратор');
+}
 function deleteItemSection(section,index){
 if(confirm('Удалить этот элемент?')){
 let items=state.sections[section].split('|'); items.splice(index,1); state.sections[section]=items.join('|'); save();
